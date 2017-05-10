@@ -31,7 +31,14 @@ public class BeatBoxFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         mBeatBox = new BeatBox(getActivity());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBeatBox.release();
     }
 
     @Override
@@ -46,7 +53,7 @@ public class BeatBoxFragment extends Fragment {
         return view;
     }
 
-    class SoundHolder extends RecyclerView.ViewHolder {
+    class SoundHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.list_item_sound_button)
         Button mButton;
         private Sound mSound;
@@ -54,11 +61,17 @@ public class BeatBoxFragment extends Fragment {
         public SoundHolder(LayoutInflater inflater, ViewGroup container) {
             super(inflater.inflate(R.layout.list_item_sound, container, false));
             ButterKnife.bind(this, itemView);
+            mButton.setOnClickListener(this);
         }
 
         public void bindSound(Sound sound) {
             mSound = sound;
             mButton.setText(mSound.getName());
+        }
+
+        @Override
+        public void onClick(View v) {
+            mBeatBox.play(mSound);
         }
     }
 
